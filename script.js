@@ -204,7 +204,6 @@ autoCompleteInputTag.addEventListener("keyup", (event) => {
     event.key === "Enter"
   ) {
     navigateAndSelectProduct(event.key);
-
     return;
   }
 
@@ -238,7 +237,7 @@ autoCompleteInputTag.addEventListener("keyup", (event) => {
   }
 });
 
-let indexToSelect = -1;
+let indexToSelect = -1; // let -1 as there is no selectedItem.
 const navigateAndSelectProduct = (key) => {
   if (key === "ArrowDown") {
     if (indexToSelect === filteredProducts.length - 1) {
@@ -246,12 +245,18 @@ const navigateAndSelectProduct = (key) => {
       deselectProduct();
       return;
     }
-    indexToSelect += 1;
+    indexToSelect += 1; // -1 + 1 = 0
     const productItemContainerToSelect = selectProduct(indexToSelect);
     if (indexToSelect > 0) {
       deselectProduct();
     }
     productItemContainerToSelect.classList.add("selected");
+    // indexToSelect += 1;
+    // const productIdToSelect = filteredProducts[indexToSelect].id.toString();
+    // const productItemContainerToSelect =
+    //   document.getElementById(productIdToSelect);
+    // console.log(productItemContainerToSelect);
+    // productItemContainerToSelect.remove();
   } else if (key === "ArrowUp") {
     if (indexToSelect === -1) {
       return;
@@ -268,8 +273,11 @@ const navigateAndSelectProduct = (key) => {
     productItemContainerToSelect.classList.add("selected");
   } else {
     enteredProduct();
-    const productItemContainer = selectProduct(indexToSelect).remove();
     autoCompleteInputTag.value = "";
+    const productItemContainerToSelect = selectProduct(indexToSelect);
+    productItemContainerToSelect.classList.add("selected");
+    productItemContainerToSelect.remove();
+    return;
   }
 };
 
@@ -277,15 +285,13 @@ const selectProduct = (index) => {
   const productIdToSelect = filteredProducts[index].id.toString();
   const productItemContainerToSelect =
     document.getElementById(productIdToSelect);
-  productItemContainerToSelect.style.backgroundColor = "#237BFF";
-  productItemContainerToSelect.firstChild.style.color = "white";
+  productItemContainerToSelect.classList.add("selected");
+
   return productItemContainerToSelect;
 };
 
 const deselectProduct = () => {
   const productToDeselect = document.getElementsByClassName("selected")[0];
-  productToDeselect.style.backgroundColor = "white";
-  productToDeselect.firstChild.style.color = "black";
   productToDeselect.classList.remove("selected");
 };
 

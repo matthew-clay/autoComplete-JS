@@ -41,7 +41,7 @@ body {
 .cartContainer {
   width: 1000px;
   height: 350px;
-  margin: 30px auto;
+  margin: 50px auto;
 
   display: flex;
   flex-wrap: wrap;
@@ -64,7 +64,7 @@ body {
 }
 
 .cartInfo {
-  margin-left: 22px;
+  margin: 0px 11px;
   color: #fff;
 }
 

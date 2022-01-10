@@ -195,8 +195,9 @@ const resultContainerTag =
 
 const cartContainerTag = document.getElementsByClassName("cartContainer")[0];
 
-let filteredProducts = [];
 autoCompleteInputTag.value = "";
+let filteredProducts = [];
+
 autoCompleteInputTag.addEventListener("keyup", (event) => {
   if (
     event.key === "ArrowDown" ||
@@ -238,9 +239,13 @@ autoCompleteInputTag.addEventListener("keyup", (event) => {
 });
 
 let indexToSelect = -1; // let -1 as there is no selectedItem.
+let enteredProductImage = "";
+let enteredProductTitle = "";
+let enteredProductPrice = "";
+
 const navigateAndSelectProduct = (key) => {
   if (key === "ArrowDown") {
-    if (indexToSelect === filteredProducts.length - 1) {
+    if (indexToSelect >= filteredProducts.length - 1) {
       indexToSelect = -1;
       deselectProduct();
       return;
@@ -251,14 +256,11 @@ const navigateAndSelectProduct = (key) => {
       deselectProduct();
     }
     productItemContainerToSelect.classList.add("selected");
-    // indexToSelect += 1;
-    // const productIdToSelect = filteredProducts[indexToSelect].id.toString();
-    // const productItemContainerToSelect =
-    //   document.getElementById(productIdToSelect);
-    // console.log(productItemContainerToSelect);
-    // productItemContainerToSelect.remove();
   } else if (key === "ArrowUp") {
     if (indexToSelect === -1) {
+      indexToSelect = filteredProducts.length - 1;
+      selectProduct(indexToSelect);
+      indexToSelect -= 1;
       return;
     }
 
@@ -269,20 +271,30 @@ const navigateAndSelectProduct = (key) => {
     }
     indexToSelect -= 1;
     deselectProduct();
-    const productItemContainerToSelect = selectProduct(indexToSelect);
-    productItemContainerToSelect.classList.add("selected");
+    selectProduct(indexToSelect);
   } else {
+    if (indexToSelect === -1 || indexToSelect > filteredProducts.length - 1) {
+      console.log("Select the item first");
+      return;
+    }
+    const currentProductItemContainer = filteredProducts[indexToSelect];
+    enteredProductImage = currentProductItemContainer.image;
+    enteredProductTitle = currentProductItemContainer.title;
+    enteredProductPrice = currentProductItemContainer.price;
+
     enteredProduct();
-    autoCompleteInputTag.value = "";
-    const productItemContainerToSelect = selectProduct(indexToSelect);
-    productItemContainerToSelect.classList.add("selected");
-    productItemContainerToSelect.remove();
-    return;
+
+    const removeEnteredProduct = selectProduct(indexToSelect);
+    removeEnteredProduct.remove();
   }
 };
 
 const selectProduct = (index) => {
+  if (filteredProducts[index] === undefined) {
+    return;
+  }
   const productIdToSelect = filteredProducts[index].id.toString();
+
   const productItemContainerToSelect =
     document.getElementById(productIdToSelect);
   productItemContainerToSelect.classList.add("selected");
@@ -292,19 +304,20 @@ const selectProduct = (index) => {
 
 const deselectProduct = () => {
   const productToDeselect = document.getElementsByClassName("selected")[0];
-  productToDeselect.classList.remove("selected");
+  if (productToDeselect) {
+    productToDeselect.classList.remove("selected");
+    return;
+  }
 };
 
 const enteredProduct = () => {
-  const currentProduct = filteredProducts[indexToSelect];
-
   const enteredProductContainer = document.createElement("div");
   enteredProductContainer.classList.add("enteredProductContainer");
   cartContainerTag.append(enteredProductContainer);
 
   const enteredProductImgTag = document.createElement("img");
   enteredProductImgTag.classList.add("cartImg");
-  enteredProductImgTag.src = currentProduct.image;
+  enteredProductImgTag.src = enteredProductImage;
   enteredProductContainer.append(enteredProductImgTag);
 
   const cartInfoTag = document.createElement("div");
@@ -312,11 +325,11 @@ const enteredProduct = () => {
 
   const enteredProductTitleTag = document.createElement("div");
   enteredProductTitleTag.classList.add("cartTitle");
-  enteredProductTitleTag.textContent = currentProduct.title;
+  enteredProductTitleTag.innerHTML = enteredProductTitle;
 
   const enteredProductPriceTag = document.createElement("div");
   enteredProductPriceTag.classList.add("cartPrice");
-  enteredProductPriceTag.textContent = `Price: ${currentProduct.price}$`;
+  enteredProductPriceTag.innerHTML = `Price: ${enteredProductPrice}$`;
   cartInfoTag.append(enteredProductTitleTag, enteredProductPriceTag);
   enteredProductContainer.append(cartInfoTag);
 };

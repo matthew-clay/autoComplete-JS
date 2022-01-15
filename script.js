@@ -187,13 +187,11 @@ const products = [
   },
 ];
 
-const autoCompleteInputTag =
-  document.getElementsByClassName("autoCompleteInput")[0];
+const autoCompleteInputTag = document.querySelector(".autoCompleteInput");
 
-const resultContainerTag =
-  document.getElementsByClassName("resultContainer")[0];
+const resultContainerTag = document.querySelector(".resultContainer");
 
-const cartContainerTag = document.getElementsByClassName("cartContainer")[0];
+const cartContainerTag = document.querySelector(".cartContainer");
 
 autoCompleteInputTag.value = "";
 let filteredProducts = [];
@@ -273,19 +271,13 @@ const navigateAndSelectProduct = (key) => {
     deselectProduct();
     selectProduct(indexToSelect);
   } else {
-    if (indexToSelect === -1 || indexToSelect > filteredProducts.length - 1) {
-      console.log("Select the item first");
-      return;
-    }
     const currentProductItemContainer = filteredProducts[indexToSelect];
     enteredProductImage = currentProductItemContainer.image;
     enteredProductTitle = currentProductItemContainer.title;
     enteredProductPrice = currentProductItemContainer.price;
-
-    enteredProduct();
-
     const removeEnteredProduct = selectProduct(indexToSelect);
     removeEnteredProduct.remove();
+    enteredProduct();
   }
 };
 

@@ -248,45 +248,54 @@ const navigateAndSelectProduct = (key) => {
       deselectProduct();
       return;
     }
+
     indexToSelect += 1; // -1 + 1 = 0
-    const productItemContainerToSelect = selectProduct(indexToSelect);
+    selectProduct(indexToSelect);
     if (indexToSelect > 0) {
       deselectProduct();
+      return;
     }
-    productItemContainerToSelect.classList.add("selected");
   } else if (key === "ArrowUp") {
     if (indexToSelect === -1) {
       indexToSelect = filteredProducts.length - 1;
       selectProduct(indexToSelect);
-      indexToSelect -= 1;
-      return;
+      indexToSelect += 1;
     }
 
     if (indexToSelect === 0) {
-      deselectProduct();
       indexToSelect = -1;
+      deselectProduct();
       return;
     }
+
     indexToSelect -= 1;
     deselectProduct();
     selectProduct(indexToSelect);
   } else {
     const currentProductItemContainer = filteredProducts[indexToSelect];
+    if (currentProductItemContainer === undefined) {
+      return;
+    }
     enteredProductImage = currentProductItemContainer.image;
     enteredProductTitle = currentProductItemContainer.title;
     enteredProductPrice = currentProductItemContainer.price;
     const removeEnteredProduct = selectProduct(indexToSelect);
     removeEnteredProduct.remove();
+    const productRemoved = filteredProducts.splice(indexToSelect, 1);
+    console.log(productRemoved);
+    if (indexToSelect === 0) {
+      indexToSelect = -1;
+      enteredProduct();
+      return;
+    }
+    indexToSelect -= 1;
+    selectProduct(indexToSelect);
     enteredProduct();
   }
 };
 
 const selectProduct = (index) => {
-  if (filteredProducts[index] === undefined) {
-    return;
-  }
   const productIdToSelect = filteredProducts[index].id.toString();
-
   const productItemContainerToSelect =
     document.getElementById(productIdToSelect);
   productItemContainerToSelect.classList.add("selected");

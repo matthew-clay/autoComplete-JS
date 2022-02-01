@@ -4,18 +4,17 @@ const cartContainerTag = document.querySelector(".cartContainer");
 
 let products; // []products from fetched-api
 const url = "https://fakestoreapi.com/products";
-fetch(url)
-  .then((response) => {
-    const responseData = response.json();
-    return responseData;
-  })
-  .then((fetchedProducts) => {
-    products = fetchedProducts;
-    autoCompleteInputTag.disabled = false;
-  })
-  .catch((err) => {
-    console.error("ERROR:", err); // error string
-  });
+
+const fetchProductFromAPI = async () => {
+  const responseData = await fetch(url);
+  const returnedProductData = await responseData.json();
+  products = returnedProductData;
+  autoCompleteInputTag.disabled = false;
+};
+
+fetchProductFromAPI().catch((err) => {
+  console.error("ERROR:", err);
+});
 
 autoCompleteInputTag.value = "";
 let filteredProducts = [];

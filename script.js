@@ -63,7 +63,6 @@ const showFilteredProduct = () => {
 };
 
 let indexToSelect = -1; // let -1 as there is no selectedItem.
-
 const navigateAndSelectProduct = (key) => {
   if (key === upArrow) {
     // ArrowUp => Deselect => current selected product/ select -1 index product
@@ -96,8 +95,39 @@ const navigateAndSelectProduct = (key) => {
     productItemContainerToSelect.classList.add("selected");
   } else {
     // else => EnterKey => removeTheProductFromResultContainer/ show in cartContainer.
-    const enteredProduct = selectProduct(indexToSelect);
-    console.log("Entered product: ", enteredProduct);
+    if (indexToSelect === -1) {
+      return console.log(indexToSelect);
+    }
+
+    const currentProductItemContainer = filteredProducts[indexToSelect];
+
+    if (currentProductItemContainer === undefined) return;
+
+    enteredProductImage = currentProductItemContainer.image;
+    enteredProductTitle = currentProductItemContainer.title;
+    enteredProductPrice = currentProductItemContainer.price;
+
+    const removeEnteredProduct = selectProduct(indexToSelect);
+    removeEnteredProduct.remove();
+    filteredProducts.splice(indexToSelect, 1);
+
+    if (indexToSelect === 0) {
+      indexToSelect = -1;
+      createEnteredProduct(
+        enteredProductImage,
+        enteredProductTitle,
+        enteredProductPrice
+      );
+
+      return;
+    }
+    indexToSelect -= 1;
+    selectProduct(indexToSelect);
+    createEnteredProduct(
+      enteredProductImage,
+      enteredProductTitle,
+      enteredProductPrice
+    );
   }
 };
 
@@ -112,26 +142,22 @@ const selectProduct = (index) => {
 };
 
 const deselectProduct = () => {
-  const productToDeselect = document.getElementsByClassName("selected")[0];
+  const productToDeselect = document.querySelector(".selected");
+
   if (productToDeselect) {
     return productToDeselect.classList.remove("selected");
   }
 };
 
-const createEnteredProduct = () => {
-  products.forEach((product) => {
-    // const productId = product.id;
-    const title = product.title;
-    const image = product.image;
-
-    const productCartTag = `
+const createEnteredProduct = (image, title, price) => {
+  const productCartTag = `
   <div class="enteredProductContainer">
     <img class="cartImg" src=${image}>
     <div class="cartInfo">
       <div class="cartTitle">${title}</div>
+      <div class="cartPrice">Price: ${price}$</div>
     </div>
   </div>`;
 
-    cartContainerTag.innerHTML += productCartTag;
-  });
+  cartContainerTag.innerHTML += productCartTag;
 };

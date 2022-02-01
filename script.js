@@ -4,6 +4,7 @@ const cartContainerTag = document.querySelector(".cartContainer");
 
 let products; // []products from fetched-api
 const url = "https://fakestoreapi.com/products";
+/* 
 fetch(url)
   .then((response) => {
     const responseData = response.json();
@@ -15,7 +16,20 @@ fetch(url)
   })
   .catch((err) => {
     console.error("ERROR:", err); // error string
-  });
+  }); 
+*/
+
+const fetchAPIAsyncFunction = async () => {
+  const responseData = await fetch(url);
+  const returnedProductDataFromResponse = await responseData.json(); // don't forget to put await.
+  products = returnedProductDataFromResponse;
+  console.log(products);
+  autoCompleteInputTag.disabled = false;
+};
+
+fetchAPIAsyncFunction().catch((err) => {
+  console.error("ERROR:", err);
+});
 
 autoCompleteInputTag.value = "";
 let filteredProducts = [];
